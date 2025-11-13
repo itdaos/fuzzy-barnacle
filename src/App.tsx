@@ -10,7 +10,7 @@ function App() {
   return (
     <CssVarsProvider>
       <CssBaseline />
-      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', minWidth: '100%' }}>
         <Router>
           <Routes>
             <Route path="/" element={<CharactersPage />} />

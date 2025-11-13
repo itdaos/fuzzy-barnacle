@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Card, Typography, Box } from '@mui/joy';
 import ReactFlow, {
   Background,
@@ -10,6 +10,7 @@ import ReactFlow, {
 import type { Node, Edge } from 'reactflow';
 import 'reactflow/dist/style.css';
 import type { Character, Film, Starship } from '../services/api';
+import CustomNode from './CustomNode';
 
 interface CharacterGraphProps {
   character: Character;
@@ -17,20 +18,21 @@ interface CharacterGraphProps {
   starships: Starship[];
 }
 
+const nodeTypes = {
+  custom: CustomNode,
+};
+
 /**
  * CharacterGraph Component
  * Display and manage character relationship graph
+ * Follows React Flow best practices: memoize nodes/edges to prevent unnecessary re-renders
  */
-export default function CharacterGraph({ character, films, starships }: CharacterGraphProps) {
+function CharacterGraph({ character, films, starships }: CharacterGraphProps) {
   const [nodes, setNodes] = useNodesState([]);
   const [edges, setEdges] = useEdgesState([]);
 
-  React.useEffect(() => {
-    buildGraph();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [character, films, starships]);
-
-  const buildGraph = () => {
+  // Memoize graph data to prevent unnecessary recalculations
+  const { graphNodes, graphEdges } = useMemo(() => {
     const newNodes: Node[] = [];
     const newEdges: Edge[] = [];
 
@@ -39,6 +41,7 @@ export default function CharacterGraph({ character, films, starships }: Characte
       id: `character-${character.id}`,
       data: { label: character.name },
       position: { x: 0, y: 0 },
+      type: 'custom',
       style: {
         background: '#ef4444',
         color: '#fff',
@@ -60,6 +63,7 @@ export default function CharacterGraph({ character, films, starships }: Characte
           x: Math.cos(angle) * radius,
           y: Math.sin(angle) * radius,
         },
+        type: 'custom',
         style: {
           background: '#14b8a6',
           color: '#fff',
@@ -90,6 +94,7 @@ export default function CharacterGraph({ character, films, starships }: Characte
           x: Math.cos(angle) * radius,
           y: Math.sin(angle) * radius,
         },
+        type: 'custom',
         style: {
           background: '#86efac',
           color: '#000',
@@ -111,9 +116,13 @@ export default function CharacterGraph({ character, films, starships }: Characte
       }
     });
 
-    setNodes(newNodes);
-    setEdges(newEdges);
-  };
+    return { graphNodes: newNodes, graphEdges: newEdges };
+  }, [character, films, starships]);
+
+  React.useEffect(() => {
+    setNodes(graphNodes);
+    setEdges(graphEdges);
+  }, [graphNodes, graphEdges, setNodes, setEdges]);
 
   return (
     <Card sx={{ height: '600px' }}>
@@ -121,7 +130,7 @@ export default function CharacterGraph({ character, films, starships }: Characte
         Character Relations Graph
       </Typography>
       <Box sx={{ height: '550px', border: '1px solid #e0e0e0', borderRadius: '8px' }}>
-        <ReactFlow nodes={nodes} edges={edges}>
+        <ReactFlow nodes={nodes} edges={edges} nodeTypes={nodeTypes}>
           <Background />
           <Controls />
           <MiniMap />
@@ -130,3 +139,5 @@ export default function CharacterGraph({ character, films, starships }: Characte
     </Card>
   );
 }
+
+export default React.memo(CharacterGraph);

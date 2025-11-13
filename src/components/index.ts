@@ -9,3 +9,6 @@ export { default as CharacterInfo } from './CharacterInfo';
 export { default as CharacterFilms } from './CharacterFilms';
 export { default as CharacterStarships } from './CharacterStarships';
 export { default as CharacterGraph } from './CharacterGraph';
+
+// React Flow Components
+export { default as CustomNode } from './CustomNode';
