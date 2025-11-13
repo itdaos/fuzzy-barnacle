@@ -1,6 +1,5 @@
 import { Card, Box, Stack, Typography } from '@mui/joy';
 import type { Character } from '../services/api';
-import { getCharacterImageUrl } from '../services/api';
 
 interface CharacterInfoProps {
   character: Character;

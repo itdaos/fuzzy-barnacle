@@ -1,6 +1,5 @@
-import { Card, Box, Typography } from '@mui/joy';
+import { Card, Typography } from '@mui/joy';
 import type { Character } from '../services/api';
-import { getCharacterImageUrl } from '../services/api';
 
 interface CharacterGridCardProps {
   character: Character;

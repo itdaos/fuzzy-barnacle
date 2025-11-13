@@ -99,8 +99,3 @@ export const extractIdFromUrl = (url: string): number => {
   const match = url.match(/\/(\d+)\/?$/);
   return match ? parseInt(match[1], 10) : 0;
 };
-
-// Generate character image URL based on character ID
-export const getCharacterImageUrl = (characterId: number): string => {
-  return `https://starwars-visualguide.com/assets/img/characters/${characterId}.jpg`;
-};
